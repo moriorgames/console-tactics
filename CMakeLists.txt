@@ -14,4 +14,4 @@ add_subdirectory(tests)
 
 add_executable(main main.cpp)
 
-target_link_libraries(main console_tactics)
+target_link_libraries(main console_tactics libncurses.a)
