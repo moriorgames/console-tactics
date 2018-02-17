@@ -1,0 +1,33 @@
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+.idea
+
+# Cmake Files
+cmake-build-debug
+CMakeScripts
+Testing
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+ConsoleTactics.cbp
+
+# Build
+src/libbfai_vendor.a
+main
+tests/testsuite
+
+# Libraries
+src/libconsole_tactics.a
+
+# Code coverage helper files
+.gcda
+.gcno
+coverage/index*
+!coverage/index.html
