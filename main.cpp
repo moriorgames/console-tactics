@@ -1,5 +1,6 @@
 
-#include <ncurses.h>
+
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -8,8 +9,10 @@
 #include <cmath>
 using namespace std;
 
-int nScreenWidth = 120;            // Console Screen Size X (columns)
-int nScreenHeight = 40;            // Console Screen Size Y (rows)
+unsigned int pixelRatio = 8;
+
+unsigned int screenWidth = 120;            // Console Screen Size X (columns)
+unsigned int screenHeight = 40;            // Console Screen Size Y (rows)
 int nMapWidth = 16;                // World Dimensions
 int nMapHeight = 16;
 
@@ -19,105 +22,39 @@ float fPlayerY = 5.09f;
 float fPlayerA = 0.0f;            // Player Start Rotation
 float fFOV = 3.14159f / 4.0f;    // Field of View
 float fDepth = 16.0f;            // Maximum rendering distance
-float fSpeed = 21.0f;            // Walking Speed
-float fRotateSpeed = 11.0f;            // Walking Speed
+float fSpeed = 7.0f;            // Walking Speed
+float rotateSpeed = 2.1f;
+
+wstring createMap();
+void processInputEvents(sf::Clock &clock, wstring &map, sf::RenderWindow &window);
 
 int main()
 {
-    initscr();
-    noecho();
-    cbreak();
-    curs_set(FALSE);
+    auto map = createMap();
 
-    WINDOW *win = newwin(nScreenHeight, nScreenWidth, 0, 0);
-    keypad(win, TRUE);
-    nodelay(win, TRUE);
-
-    start_color();
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
-    init_pair(2, COLOR_YELLOW, COLOR_YELLOW);
-    init_pair(3, COLOR_BLUE, COLOR_BLUE);
-    init_pair(4, COLOR_GREEN, COLOR_GREEN);
-    init_pair(5, COLOR_BLACK, COLOR_BLACK);
+    // Create main window
+    sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
+    sf::Clock clock;
 
 
-    // Create Map of world space # = wall block, . = space
-    wstring map;
-    map += L"#########.......";
-    map += L"#...............";
-    map += L"#.......########";
-    map += L"#..............#";
-    map += L"#......##......#";
-    map += L"#......##......#";
-    map += L"#..............#";
-    map += L"###............#";
-    map += L"##.............#";
-    map += L"#......####..###";
-    map += L"#......#.......#";
-    map += L"#......#.......#";
-    map += L"#..............#";
-    map += L"#......#########";
-    map += L"#..............#";
-    map += L"################";
+    // Setup Colors
+    sf::Color lightGray(150, 150, 150);
+    sf::Color gray(125, 125, 125);
+    sf::Color darkGray(100, 100, 100);
+    sf::Color darkestGray(50, 50, 50);
+    sf::Color border(75, 75, 75);
+    sf::Color lightGreen(150, 255, 150);
+    sf::Color lightBlue(100, 100, 255);
 
-    bool finished = false;
-    auto tp1 = chrono::system_clock::now();
-    auto tp2 = chrono::system_clock::now();
+    while (window.isOpen()) {
 
-    while (!finished) {
-        // We'll need time differential per frame to calculate modification
-        // to movement speeds, to ensure consistant movement, as ray-tracing
-        // is non-deterministic
-        tp2 = chrono::system_clock::now();
-        chrono::duration<float> elapsedTime = tp2 - tp1;
-        tp1 = tp2;
-        float fElapsedTime = elapsedTime.count();
+        processInputEvents(clock, map, window);
 
-        // Player controls
-        auto keyInput = wgetch(win);
+        window.clear(sf::Color::Blue);
 
-        // Finish game
-        if (keyInput == 'q' || keyInput == 'Q') {
-            finished = true;
-        }
-
-        // Handle CCW Rotation
-        if (keyInput == 'a' || keyInput == 'A') {
-            fPlayerA -= fRotateSpeed * fElapsedTime;
-        }
-
-        // Handle CW Rotation
-        if (keyInput == 'd' || keyInput == 'D') {
-            fPlayerA += fRotateSpeed * fElapsedTime;
-        }
-
-        // Handle Forwards movement & collision
-        if (keyInput == 'w' || keyInput == 'W') {
-
-            fPlayerX += sinf(fPlayerA) * fSpeed * fElapsedTime;;
-            fPlayerY += cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
-            {
-                fPlayerX -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
-                fPlayerY -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            }
-        }
-
-        // Handle backwards movement & collision
-        if (keyInput == 's' || keyInput == 'S') {
-
-            fPlayerX -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
-            fPlayerY -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
-            {
-                fPlayerX += sinf(fPlayerA) * fSpeed * fElapsedTime;;
-                fPlayerY += cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            }
-        }
-
-        for (int x = 0; x < nScreenWidth; x++) {
+        for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
-            float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float) x / (float) nScreenWidth) * fFOV;
+            float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float) x / (float) screenWidth) * fFOV;
 
             // Find distance to wall
             float fStepSize = 0.1f;          // Increment size for ray casting, decrease to increase
@@ -180,42 +117,103 @@ int main()
 
 
             // Calculate distance to ceiling and floor
-            int nCeiling = (float) (nScreenHeight / 2.0) - nScreenHeight / ((float) fDistanceToWall);
-            int nFloor = nScreenHeight - nCeiling;
+            int nCeiling = (float) (screenHeight / 2.0) - screenHeight / ((float) fDistanceToWall);
+            int nFloor = screenHeight - nCeiling;
 
             // Shader walls based on distance
-            char nShade = ' ';
+            sf::Color nShade;
             if (fDistanceToWall <= fDepth / 4.0f) {
-                nShade = '#';    // Very close
-            } else if (fDistanceToWall < fDepth / 3.0f) { nShade = 'Y'; }
-            else if (fDistanceToWall < fDepth / 2.0f) { nShade = ':'; }
-            else { nShade = ' '; }        // Too far away
+                nShade = lightGray;    // Very close
+            } else if (fDistanceToWall < fDepth / 3.0f) { nShade = gray; }
+            else if (fDistanceToWall < fDepth / 2.0f) { nShade = darkGray; }
+            else { nShade = darkestGray; }        // Too far away
 
-            if (bBoundary) { nShade = ' '; } // Black it out
+            if (bBoundary) { nShade = border; } // Black it out
 
-
-            for (int y = 0; y < nScreenHeight; y++) {
+            for (int y = 0; y < screenHeight; y++) {
+                sf::RectangleShape rectangle(sf::Vector2f(pixelRatio, pixelRatio));
                 // Each Row
                 if (y <= nCeiling) {
-                    mvwaddch(win, y, x, ' ' | COLOR_PAIR(3));
+                    rectangle.setFillColor(lightBlue);
                 } else if (y > nCeiling && y <= nFloor) {
-                    mvwaddch(win, y, x, nShade | COLOR_PAIR(1));
+                    rectangle.setFillColor(nShade);
                 } else // Floor
                 {
-                    mvwaddch(win, y, x, ' ' | COLOR_PAIR(4));
+                    rectangle.setFillColor(lightGreen);
                 }
+
+                rectangle.setPosition(x * pixelRatio, y * pixelRatio);
+                window.draw(rectangle);
             }
 
         }
 
-        wrefresh(win);
-
-        // Display Stats
-        mvwprintw(win, 1, 1, "X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f / fElapsedTime);
-
+        window.display();
     }
 
-    endwin();
+    return EXIT_SUCCESS;
+}
 
-    return 0;
+wstring createMap()
+{
+    // Create Map of world space # = wall block, . = space
+    wstring map;
+    map += L"#########.......";
+    map += L"#...............";
+    map += L"#.......########";
+    map += L"#..............#";
+    map += L"#......##......#";
+    map += L"#......##......#";
+    map += L"#..............#";
+    map += L"###............#";
+    map += L"##.............#";
+    map += L"#......####..###";
+    map += L"#......#.......#";
+    map += L"#......#.......#";
+    map += L"#..............#";
+    map += L"#......#########";
+    map += L"#..............#";
+    map += L"################";
+
+    return map;
+}
+
+void processInputEvents(sf::Clock &clock, wstring &map, sf::RenderWindow &window)
+{
+    auto elapsedTime = clock.getElapsedTime();
+    clock.restart();
+
+    sf::Event event;
+
+    while (window.pollEvent(event)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            window.close();
+        }
+
+        // Player rotation
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            fPlayerA -= rotateSpeed * elapsedTime.asSeconds();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            fPlayerA += rotateSpeed * elapsedTime.asSeconds();
+        }
+
+        // Player moves
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            fPlayerX += sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+            fPlayerY += cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+            if (map.c_str()[(int) fPlayerX * nMapWidth + (int) fPlayerY] == '#') {
+                fPlayerX -= sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+                fPlayerY -= cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+            }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            fPlayerX -= sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+            fPlayerY -= cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+            if (map.c_str()[(int) fPlayerX * nMapWidth + (int) fPlayerY] == '#') {
+                fPlayerX += sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+                fPlayerY += cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+            }
+        }
+    }
 }
