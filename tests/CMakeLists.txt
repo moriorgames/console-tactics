@@ -7,7 +7,7 @@ include_directories(
 add_executable(
         testsuite
         test.cpp
-        MoriorGames/Entity/HeroTest.cpp
+        MoriorGames/Entity/PlayerTest.cpp
 )
 
 target_link_libraries(

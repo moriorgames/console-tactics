@@ -1,7 +1,7 @@
 
 add_library(
         console_tactics
-        MoriorGames/Entity/Hero.cpp
+        MoriorGames/Entity/Player.cpp
 )
 
 target_link_libraries(console_tactics)

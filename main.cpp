@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+#include "src/MoriorGames/Entity/Player.h"
+
 #define MAP_SIZE 40
 
 using namespace std;
@@ -18,21 +20,21 @@ int mapSize = MAP_SIZE;
 float fPlayerX = 14.7f;            // Player Start Position
 float fPlayerY = 5.09f;
 
-float fPlayerA = 0.0f;            // Player Start Rotation
 float fFOV = 3.14159f / 3.5f;    // Field of View
 float fDepth = MAP_SIZE;            // Maximum rendering distance
 float fSpeed = 7.0f;            // Walking Speed
-float rotateSpeed = 2.1f;
 
 wstring createMap();
-void processInputEvents(sf::Clock &clock, wstring &map, sf::RenderWindow &window);
+void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window);
 
 int main()
 {
     auto map = createMap();
+    auto player = new Player;
 
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
+    window.setFramerateLimit(60);
     sf::Clock clock;
 
     // Setup Colors
@@ -52,13 +54,13 @@ int main()
 
     while (window.isOpen()) {
 
-        processInputEvents(clock, map, window);
+        processInputEvents(clock, map, player, window);
 
         window.clear(sf::Color::Blue);
 
         for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
-            float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float) x / (float) screenWidth) * fFOV;
+            float fRayAngle = (player->getAngle() - fFOV / 2.0f) + ((float) x / (float) screenWidth) * fFOV;
 
             // Find distance to wall
             float fStepSize = 0.1f;          // Increment size for ray casting, decrease to increase
@@ -152,25 +154,25 @@ wstring createMap()
     wstring map;
     map += L"########################################";
     map += L"#......................................#";
-    map += L"#.......########.......................#";
-    map += L"#......................................#";
+    map += L"#..#############.......................#";
+    map += L"#..#...................................#";
     map += L"#......##..............................#";
-    map += L"#......##....######..........###########";
+    map += L"#...#####....######..........###########";
     map += L"#.............#######............#######";
     map += L"###............################.....####";
-    map += L"##.....................................#";
-    map += L"#......####..........................###";
-    map += L"#......#...............................#";
-    map += L"#......#...............................#";
+    map += L"##...#.#...............................#";
+    map += L"#...##.####..........................###";
+    map += L"#..##..#...............................#";
+    map += L"#..#...#...............................#";
     map += L"#......................................#";
-    map += L"#......####........................#####";
-    map += L"#......................................#";
+    map += L"#......#####.......................#####";
+    map += L"#..........########....................#";
     map += L"########################################";
 
     return map;
 }
 
-void processInputEvents(sf::Clock &clock, wstring &map, sf::RenderWindow &window)
+void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window)
 {
     auto elapsedTime = clock.getElapsedTime();
     clock.restart();
@@ -181,30 +183,31 @@ void processInputEvents(sf::Clock &clock, wstring &map, sf::RenderWindow &window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             window.close();
         }
+        player->setElapsedTime(elapsedTime.asSeconds());
 
         // Player rotation
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            fPlayerA -= rotateSpeed * elapsedTime.asSeconds();
+            player->turnLeft();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            fPlayerA += rotateSpeed * elapsedTime.asSeconds();
+            player->turnRight();
         }
 
         // Player moves
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            fPlayerX += sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
-            fPlayerY += cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+            fPlayerX += sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
+            fPlayerY += cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
             if (map.c_str()[(int) fPlayerX * mapSize + (int) fPlayerY] == '#') {
-                fPlayerX -= sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
-                fPlayerY -= cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();
+                fPlayerX -= sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
+                fPlayerY -= cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            fPlayerX -= sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
-            fPlayerY -= cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+            fPlayerX -= sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
+            fPlayerY -= cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
             if (map.c_str()[(int) fPlayerX * mapSize + (int) fPlayerY] == '#') {
-                fPlayerX += sinf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
-                fPlayerY += cosf(fPlayerA) * fSpeed * elapsedTime.asSeconds();;
+                fPlayerX += sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
+                fPlayerY += cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
             }
         }
     }
