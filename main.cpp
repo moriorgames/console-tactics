@@ -4,12 +4,13 @@
 #include <cmath>
 
 #include "src/MoriorGames/Entity/Player.h"
+#include "src/MoriorGames/Services/MapFactory.h"
 
 #define MAP_SIZE 40
 
 using namespace std;
 
-unsigned int pixelRatio = 4;
+unsigned int pixelRatio = 6;
 
 unsigned int screenWidth = 200;
 
@@ -17,20 +18,19 @@ unsigned int screenHeight = 120;
 
 int mapSize = MAP_SIZE;
 
-float fFOV = 3.14159f / 3.5f;    // Field of View
-float fDepth = MAP_SIZE;            // Maximum rendering distance
+float fFOV = 3.14159f / 3.5f;
 
-wstring createMap();
+float fDepth = MAP_SIZE;
+
 void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window);
 
 int main()
 {
-    auto map = createMap();
+    auto map = (new MapFactory)->createMap();
     auto player = new Player;
 
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
-    window.setFramerateLimit(60);
     sf::Clock clock;
 
     // Setup Colors
@@ -142,30 +142,6 @@ int main()
     }
 
     return EXIT_SUCCESS;
-}
-
-wstring createMap()
-{
-    // Create Map of world space # = wall block, . = space
-    wstring map;
-    map += L"#####################################..#";
-    map += L"#.................####.................#";
-    map += L"#..#############.....###...........#####";
-    map += L"#..#.........####......########..####..#";
-    map += L"#......##..............................#";
-    map += L"#...#####....######..........###########";
-    map += L"#.....#.......#######............#######";
-    map += L"###............################.....####";
-    map += L"##...#.#...............................#";
-    map += L"#...##.####...#############....#....####";
-    map += L"#..##..#...........##..####..###.......#";
-    map += L"#..#...#......#######....##....######..#";
-    map += L"#..................##.....#....#.......#";
-    map += L"#......#####........###............#####";
-    map += L"#..........########....................#";
-    map += L"########################################";
-
-    return map;
 }
 
 void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window)
