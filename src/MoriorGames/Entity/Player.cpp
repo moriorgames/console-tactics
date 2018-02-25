@@ -10,6 +10,18 @@ void Player::turnRight()
     angle += SPEED_ROTATE * elapsedTime;
 }
 
+void Player::moveForward()
+{
+    x += sinf(angle) * SPEED_MOVE * elapsedTime;
+    y += cosf(angle) * SPEED_MOVE * elapsedTime;
+}
+
+void Player::moveBack()
+{
+    x -= sinf(angle) * SPEED_MOVE * elapsedTime;
+    y -= cosf(angle) * SPEED_MOVE * elapsedTime;
+}
+
 float Player::getX() const
 {
     return x;

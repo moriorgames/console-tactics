@@ -2,6 +2,7 @@
 #define MORIOR_GAMES_ENTITY_HERO_H
 
 #include <string>
+#include <cmath>
 
 class Player
 {
@@ -13,6 +14,8 @@ public:
 
     void turnLeft();
     void turnRight();
+    void moveForward();
+    void moveBack();
 
     float getX() const;
     void setX(float x);

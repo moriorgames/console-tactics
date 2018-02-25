@@ -17,12 +17,8 @@ unsigned int screenHeight = 120;
 
 int mapSize = MAP_SIZE;
 
-float fPlayerX = 14.7f;            // Player Start Position
-float fPlayerY = 5.09f;
-
 float fFOV = 3.14159f / 3.5f;    // Field of View
 float fDepth = MAP_SIZE;            // Maximum rendering distance
-float fSpeed = 7.0f;            // Walking Speed
 
 wstring createMap();
 void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window);
@@ -76,8 +72,8 @@ int main()
             while (!bHitWall && fDistanceToWall < fDepth) {
 
                 fDistanceToWall += fStepSize;
-                int nTestX = (int) (fPlayerX + fEyeX * fDistanceToWall);
-                int nTestY = (int) (fPlayerY + fEyeY * fDistanceToWall);
+                int nTestX = (int) (player->getX() + fEyeX * fDistanceToWall);
+                int nTestY = (int) (player->getY() + fEyeY * fDistanceToWall);
 
                 // Test if ray is out of bounds
                 if (nTestX < 0 || nTestX >= mapSize || nTestY < 0 || nTestY >= mapSize) {
@@ -152,20 +148,20 @@ wstring createMap()
 {
     // Create Map of world space # = wall block, . = space
     wstring map;
-    map += L"########################################";
-    map += L"#......................................#";
-    map += L"#..#############.......................#";
-    map += L"#..#...................................#";
+    map += L"#####################################..#";
+    map += L"#.................####.................#";
+    map += L"#..#############.....###...........#####";
+    map += L"#..#.........####......########..####..#";
     map += L"#......##..............................#";
     map += L"#...#####....######..........###########";
-    map += L"#.............#######............#######";
+    map += L"#.....#.......#######............#######";
     map += L"###............################.....####";
     map += L"##...#.#...............................#";
-    map += L"#...##.####..........................###";
-    map += L"#..##..#...............................#";
-    map += L"#..#...#...............................#";
-    map += L"#......................................#";
-    map += L"#......#####.......................#####";
+    map += L"#...##.####...#############....#....####";
+    map += L"#..##..#...........##..####..###.......#";
+    map += L"#..#...#......#######....##....######..#";
+    map += L"#..................##.....#....#.......#";
+    map += L"#......#####........###............#####";
     map += L"#..........########....................#";
     map += L"########################################";
 
@@ -195,19 +191,15 @@ void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::Rend
 
         // Player moves
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            fPlayerX += sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
-            fPlayerY += cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
-            if (map.c_str()[(int) fPlayerX * mapSize + (int) fPlayerY] == '#') {
-                fPlayerX -= sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
-                fPlayerY -= cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();
+            player->moveForward();
+            if (map.c_str()[(int) player->getX() * mapSize + (int) player->getY()] == '#') {
+                player->moveBack();
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            fPlayerX -= sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
-            fPlayerY -= cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
-            if (map.c_str()[(int) fPlayerX * mapSize + (int) fPlayerY] == '#') {
-                fPlayerX += sinf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
-                fPlayerY += cosf(player->getAngle()) * fSpeed * elapsedTime.asSeconds();;
+            player->moveBack();
+            if (map.c_str()[(int) player->getX() * mapSize + (int) player->getY()] == '#') {
+                player->moveForward();
             }
         }
     }
