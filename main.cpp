@@ -1,12 +1,11 @@
 
-
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
 #include "src/MoriorGames/Entity/Player.h"
+#include "src/MoriorGames/Services/InputEvents.h"
 #include "src/MoriorGames/Services/MapFactory.h"
-
-#define MAP_SIZE 40
+#include "src/MoriorGames/Definitions.h"
 
 using namespace std;
 
@@ -22,16 +21,15 @@ float fFOV = 3.14159f / 3.5f;
 
 float fDepth = MAP_SIZE;
 
-void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window);
-
 int main()
 {
+    sf::Clock clock;
     auto map = (new MapFactory)->createMap();
     auto player = new Player;
-
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
-    sf::Clock clock;
+
+    auto inputEvents = new InputEvents(clock, map, player, window);
 
     // Setup Colors
     sf::Color wallClose(150, 150, 150);
@@ -50,7 +48,7 @@ int main()
 
     while (window.isOpen()) {
 
-        processInputEvents(clock, map, player, window);
+        inputEvents->process();
 
         window.clear(sf::Color::Blue);
 
@@ -142,41 +140,4 @@ int main()
     }
 
     return EXIT_SUCCESS;
-}
-
-void processInputEvents(sf::Clock &clock, wstring &map, Player *player, sf::RenderWindow &window)
-{
-    auto elapsedTime = clock.getElapsedTime();
-    clock.restart();
-
-    sf::Event event;
-
-    while (window.pollEvent(event)) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-            window.close();
-        }
-        player->setElapsedTime(elapsedTime.asSeconds());
-
-        // Player rotation
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            player->turnLeft();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            player->turnRight();
-        }
-
-        // Player moves
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            player->moveForward();
-            if (map.c_str()[(int) player->getX() * mapSize + (int) player->getY()] == '#') {
-                player->moveBack();
-            }
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            player->moveBack();
-            if (map.c_str()[(int) player->getX() * mapSize + (int) player->getY()] == '#') {
-                player->moveForward();
-            }
-        }
-    }
 }

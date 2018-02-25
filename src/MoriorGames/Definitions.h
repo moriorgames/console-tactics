@@ -1,0 +1,6 @@
+#ifndef MORIOR_GAMES_DEFINITIONS_H
+#define MORIOR_GAMES_DEFINITIONS_H
+
+#define MAP_SIZE 40
+
+#endif
