@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+#include <iostream>
+
 #include "src/MoriorGames/Entity/Player.h"
 #include "src/MoriorGames/Services/InputEvents.h"
 #include "src/MoriorGames/Services/MapFactory.h"
@@ -32,25 +34,36 @@ int main()
     auto inputEvents = new InputEvents(clock, map, player, window);
 
     // Setup Colors
-    sf::Color wallClose(150, 150, 150);
-    sf::Color wallMedium(125, 125, 125);
-    sf::Color wallFar(100, 100, 100);
-    sf::Color wallFarFar(75, 75, 75);
-    sf::Color darkestGray(25, 25, 25);
+    sf::Color wallClose(100, 100, 100);
+    sf::Color wallMedium(80, 80, 80);
+    sf::Color wallFar(65, 65, 65);
+    sf::Color wallFarFar(40, 40, 40);
+    sf::Color darkestGray(20, 20, 20);
 
-    sf::Color lightGreen(175, 255, 175);
-    sf::Color green(120, 255, 120);
-    sf::Color darkGreen(80, 240, 80);
+    sf::Color lightFloor(100, 80, 50);
+    sf::Color floor(90, 70, 40);
+    sf::Color darkFloor(80, 60, 30);
 
-    sf::Color lightBlue(100, 100, 255);
-    sf::Color blue(70, 70, 255);
-    sf::Color darkBlue(40, 40, 255);
+    sf::Color lightSky(60, 70, 100);
+    sf::Color sky(50, 60, 90);
+    sf::Color darkSky(40, 50, 80);
+
+    unsigned int index = 0;
+    std::vector<sf::RectangleShape> rectangles(screenWidth * screenHeight);
+    for (int x = 0; x < screenWidth; x++) {
+        for (int y = 0; y < screenHeight; y++) {
+            sf::RectangleShape rectangle(sf::Vector2f(pixelRatio, pixelRatio));
+            rectangle.setPosition(x * pixelRatio, y * pixelRatio);
+            rectangles.at(index) = rectangle;
+            index++;
+        }
+    }
 
     while (window.isOpen()) {
 
         inputEvents->process();
-
         window.clear(sf::Color::Blue);
+        index = 0;
 
         for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
@@ -92,7 +105,7 @@ int main()
 
             // Shader walls based on distance
             sf::Color wallShade;
-            if (fDistanceToWall <= fDepth / 5.0f) {
+            if (fDistanceToWall <= fDepth / 6.0f) {
                 wallShade = wallClose;
             } else if (fDistanceToWall < fDepth / 4.0f) {
                 wallShade = wallMedium;
@@ -107,33 +120,36 @@ int main()
             for (int y = 0; y < screenHeight; y++) {
 
                 sf::Color skyShade;
-                sf::Color floorShade;
-                float b = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
-                if (b < 0.6) {
-                    skyShade = lightBlue;
-                    floorShade = lightGreen;
-                } else if (b < 0.75) {
-                    skyShade = blue;
-                    floorShade = green;
+                float skyFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
+                if (skyFloat < 1.3) {
+                    skyShade = darkSky;
+                } else if (skyFloat < 1.5) {
+                    skyShade = sky;
                 } else {
-                    skyShade = darkBlue;
-                    floorShade = darkGreen;
+                    skyShade = lightSky;
                 }
 
-                sf::RectangleShape rectangle(sf::Vector2f(pixelRatio, pixelRatio));
+                sf::Color floorShade;
+                float floorFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
+                if (floorFloat < 0.55) {
+                    floorShade = lightFloor;
+                } else if (floorFloat < 0.75) {
+                    floorShade = floor;
+                } else {
+                    floorShade = darkFloor;
+                }
 
                 if (y <= nCeiling) {
-                    rectangle.setFillColor(skyShade);
+                    rectangles.at(index).setFillColor(skyShade);
                 } else if (y > nCeiling && y <= nFloor) {
-                    rectangle.setFillColor(wallShade);
+                    rectangles.at(index).setFillColor(wallShade);
                 } else {
-                    rectangle.setFillColor(floorShade);
+                    rectangles.at(index).setFillColor(floorShade);
                 }
 
-                rectangle.setPosition(x * pixelRatio, y * pixelRatio);
-                window.draw(rectangle);
+                window.draw(rectangles.at(index));
+                index++;
             }
-
         }
 
         window.display();
