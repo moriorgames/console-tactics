@@ -2,17 +2,18 @@
 #define MORIOR_GAMES_SERVICES_INPUT_EVENTS_H
 
 #include <SFML/Graphics.hpp>
+#include "../Entity/Map.h"
 #include "../Entity/Player.h"
 
 class InputEvents
 {
 public:
-    InputEvents(sf::Clock &clock, std::wstring &map, Player *player, sf::RenderWindow &window);
+    InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RenderWindow &window);
     void process();
 
 private:
     sf::Clock &clock;
-    std::wstring &map;
+    Map *map;
     Player *player;
     sf::RenderWindow &window;
 };

@@ -1,12 +1,14 @@
 #ifndef MORIOR_GAMES_SERVICES_MAP_FACTORY_H
 #define MORIOR_GAMES_SERVICES_MAP_FACTORY_H
 
-#include <string>
+#include <vector>
+#include "../Entity/Map.h"
+#include "../Definitions.h"
 
 class MapFactory
 {
 public:
-    std::wstring createMap();
+    Map *createMap();
 };
 
 #endif

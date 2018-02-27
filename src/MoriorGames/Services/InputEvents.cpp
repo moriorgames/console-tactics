@@ -1,7 +1,7 @@
 #include "InputEvents.h"
 #include "../Definitions.h"
 
-InputEvents::InputEvents(sf::Clock &clock, std::wstring &map, Player *player, sf::RenderWindow &window)
+InputEvents::InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RenderWindow &window)
     : clock{clock}, map{map}, player{player}, window{window}
 {
 }
@@ -30,13 +30,13 @@ void InputEvents::process()
         // Player moves
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             player->moveForward();
-            if (map.c_str()[(int) player->getX() * MAP_SIZE + (int) player->getY()] == '#') {
+            if (map->isWallCollision(player->getX(), player->getY())) {
                 player->moveBack();
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             player->moveBack();
-            if (map.c_str()[(int) player->getX() * MAP_SIZE + (int) player->getY()] == '#') {
+            if (map->isWallCollision(player->getX(), player->getY())) {
                 player->moveForward();
             }
         }

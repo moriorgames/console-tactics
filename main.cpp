@@ -92,7 +92,7 @@ int main()
                     fDistanceToWall = fDepth;
                 } else {
                     // Ray is inbounds so test to see if the ray cell is a wall block
-                    if (map.c_str()[nTestX * mapSize + nTestY] == '#') {
+                    if (map->isWallCollision(nTestX, nTestY)) {
                         // Ray has hit wall
                         bHitWall = true;
                     }
@@ -151,6 +151,14 @@ int main()
                 index++;
             }
         }
+
+//        sf::RectangleShape rectangle(sf::Vector2f(TEXTURE_SIZE, TEXTURE_SIZE));
+//        rectangle.setPosition(2 * 64, 10 * 10);
+//        sf::Texture texture;
+//        texture.loadFromFile("res/textures/wall-1.jpg");
+//        rectangle.setTexture(&texture);
+//        rectangle.setScale(2.0f, 2.0f);
+//        window.draw(rectangle);
 
         window.display();
     }

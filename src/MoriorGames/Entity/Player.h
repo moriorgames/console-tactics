@@ -1,5 +1,5 @@
-#ifndef MORIOR_GAMES_ENTITY_HERO_H
-#define MORIOR_GAMES_ENTITY_HERO_H
+#ifndef MORIOR_GAMES_ENTITY_PLAYER_H
+#define MORIOR_GAMES_ENTITY_PLAYER_H
 
 #include <string>
 #include <cmath>
@@ -7,8 +7,8 @@
 class Player
 {
 public:
-    const float START_X = 14.7f;
-    const float START_Y = 5.09f;
+    const float START_X = 3.0f;
+    const float START_Y = 0.0f;
     const float SPEED_MOVE = 7.7f;
     const float SPEED_ROTATE = 2.7f;
 
