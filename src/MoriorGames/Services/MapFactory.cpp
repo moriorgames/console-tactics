@@ -4,10 +4,10 @@ Map *MapFactory::createMap()
 {
     auto map = new Map;
 
-    for (short x = 0; x < 10; ++x) {
-        for (short y = 0; y < 10; ++y) {
+    for (short x = 0; x < structure.size(); ++x) {
+        for (short y = 0; y < structure[x].size(); ++y) {
             Tile *tile;
-            if (x % 3 == 0 && y % 3 == 1) {
+            if (structure.at(x).at(y)) {
                 tile = new Tile(x, y, TILE_WALL);
             } else {
                 tile = new Tile(x, y, TILE_FLOOR);

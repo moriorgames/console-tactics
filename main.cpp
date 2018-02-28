@@ -11,7 +11,7 @@
 
 using namespace std;
 
-unsigned int pixelRatio = 6;
+unsigned int pixelRatio = 7;
 
 unsigned int screenWidth = 200;
 
@@ -22,6 +22,39 @@ int mapSize = MAP_SIZE;
 float fFOV = 3.14159f / 3.5f;
 
 float fDepth = MAP_SIZE;
+
+sf::Color sampleGlyph(sf::Image &image, float x, float y, int distanceDarken)
+{
+    float width = image.getSize().x;
+    float height = image.getSize().y;
+    sf::Color color(0, 0, 0);
+
+    int sx = (int) (x * width);
+    int sy = (int) (y * height - 1.0f);
+    if (sx < 0 || sx >= width || sy < 0 || sy >= height) {
+        return color;
+    } else {
+
+        color = image.getPixel(sx, sy);
+        if (color.r > distanceDarken) {
+            color.r -= distanceDarken;
+        } else {
+            color.r = 0;
+        }
+        if (color.g > distanceDarken) {
+            color.g -= distanceDarken;
+        } else {
+            color.g = 0;
+        }
+        if (color.b > distanceDarken) {
+            color.b -= distanceDarken;
+        } else {
+            color.b = 0;
+        }
+
+        return color;
+    }
+}
 
 int main()
 {
@@ -48,6 +81,11 @@ int main()
     sf::Color lightSky(60, 70, 100);
     sf::Color sky(50, 60, 90);
     sf::Color darkSky(40, 50, 80);
+
+    sf::Texture texture;
+    texture.loadFromFile("res/textures/wall-1.jpg");
+    auto image = texture.copyToImage();
+    int distanceDarken = 0;
 
     unsigned int index = 0;
     std::vector<sf::RectangleShape> rectangles(screenWidth * screenHeight);
@@ -79,6 +117,8 @@ int main()
             float fEyeX = sinf(fRayAngle); // Unit vector for ray in player space
             float fEyeY = cosf(fRayAngle);
 
+            float fSampleX = .0f;
+
             // Incrementally cast ray from player, along ray angle, testing for
             // intersection with a block
             while (!bHitWall && fDistanceToWall < fDepth) {
@@ -96,6 +136,29 @@ int main()
                     if (map->isWallCollision(nTestX, nTestY)) {
                         // Ray has hit wall
                         bHitWall = true;
+
+                        // Determine where ray has hit wall. Break Block boundary
+                        // int 4 line segments
+                        float fBlockMidX = (float) nTestX + 0.5f;
+                        float fBlockMidY = (float) nTestY + 0.5f;
+
+                        float fTestPointX = player->getX() + fEyeX * fDistanceToWall;
+                        float fTestPointY = player->getY() + fEyeY * fDistanceToWall;
+
+                        float fTestAngle = atan2f((fTestPointY - fBlockMidY), (fTestPointX - fBlockMidX));
+
+                        if (fTestAngle >= -3.14159f * 0.25f && fTestAngle < 3.14159f * 0.25f) {
+                            fSampleX = fTestPointY - (float) nTestY;
+                        }
+                        if (fTestAngle >= 3.14159f * 0.25f && fTestAngle < 3.14159f * 0.75f) {
+                            fSampleX = fTestPointX - (float) nTestX;
+                        }
+                        if (fTestAngle < -3.14159f * 0.25f && fTestAngle >= -3.14159f * 0.75f) {
+                            fSampleX = fTestPointX - (float) nTestX;
+                        }
+                        if (fTestAngle >= 3.14159f * 0.75f || fTestAngle < -3.14159f * 0.75f) {
+                            fSampleX = fTestPointY - (float) nTestY;
+                        }
                     }
                 }
             }
@@ -105,17 +168,16 @@ int main()
             int nFloor = screenHeight - nCeiling;
 
             // Shader walls based on distance
-            sf::Color wallShade;
             if (fDistanceToWall <= fDepth / 6.0f) {
-                wallShade = wallClose;
+                distanceDarken = 0;
             } else if (fDistanceToWall < fDepth / 4.0f) {
-                wallShade = wallMedium;
+                distanceDarken = 25;
             } else if (fDistanceToWall < fDepth / 3.0f) {
-                wallShade = wallFar;
+                distanceDarken = 50;
             } else if (fDistanceToWall < fDepth / 2.0f) {
-                wallShade = wallFarFar;
+                distanceDarken = 75;
             } else {
-                wallShade = darkestGray;
+                distanceDarken = 100;
             }
 
             for (int y = 0; y < screenHeight; y++) {
@@ -143,11 +205,8 @@ int main()
                 if (y <= nCeiling) {
                     rectangles.at(index).setFillColor(skyShade);
                 } else if (y > nCeiling && y <= nFloor) {
-                    if (y % 4 == 0) {
-                        rectangles.at(index).setFillColor(textureGray);
-                    } else {
-                        rectangles.at(index).setFillColor(wallShade);
-                    }
+                    float fSampleY = ((float) y - (float) nCeiling) / ((float) nFloor - (float) nCeiling);
+                    rectangles.at(index).setFillColor(sampleGlyph(image, fSampleX, fSampleY, distanceDarken));
                 } else {
                     rectangles.at(index).setFillColor(floorShade);
                 }
