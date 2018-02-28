@@ -39,6 +39,7 @@ int main()
     sf::Color wallFar(65, 65, 65);
     sf::Color wallFarFar(40, 40, 40);
     sf::Color darkestGray(20, 20, 20);
+    sf::Color textureGray(40, 40, 40);
 
     sf::Color lightFloor(100, 80, 50);
     sf::Color floor(90, 70, 40);
@@ -121,9 +122,9 @@ int main()
 
                 sf::Color skyShade;
                 float skyFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
-                if (skyFloat < 1.3) {
+                if (skyFloat < 1.15) {
                     skyShade = darkSky;
-                } else if (skyFloat < 1.5) {
+                } else if (skyFloat < 1.35) {
                     skyShade = sky;
                 } else {
                     skyShade = lightSky;
@@ -133,7 +134,7 @@ int main()
                 float floorFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
                 if (floorFloat < 0.55) {
                     floorShade = lightFloor;
-                } else if (floorFloat < 0.75) {
+                } else if (floorFloat < 0.81) {
                     floorShade = floor;
                 } else {
                     floorShade = darkFloor;
@@ -142,7 +143,11 @@ int main()
                 if (y <= nCeiling) {
                     rectangles.at(index).setFillColor(skyShade);
                 } else if (y > nCeiling && y <= nFloor) {
-                    rectangles.at(index).setFillColor(wallShade);
+                    if (y % 4 == 0) {
+                        rectangles.at(index).setFillColor(textureGray);
+                    } else {
+                        rectangles.at(index).setFillColor(wallShade);
+                    }
                 } else {
                     rectangles.at(index).setFillColor(floorShade);
                 }
@@ -151,14 +156,6 @@ int main()
                 index++;
             }
         }
-
-//        sf::RectangleShape rectangle(sf::Vector2f(TEXTURE_SIZE, TEXTURE_SIZE));
-//        rectangle.setPosition(2 * 64, 10 * 10);
-//        sf::Texture texture;
-//        texture.loadFromFile("res/textures/wall-1.jpg");
-//        rectangle.setTexture(&texture);
-//        rectangle.setScale(2.0f, 2.0f);
-//        window.draw(rectangle);
 
         window.display();
     }
