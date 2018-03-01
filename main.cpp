@@ -8,8 +8,8 @@
 #include <sstream>
 
 #include "src/MoriorGames/Entity/Player.h"
+#include "src/MoriorGames/Entity/Map.h"
 #include "src/MoriorGames/Services/InputEvents.h"
-#include "src/MoriorGames/Services/MapFactory.h"
 #include "src/MoriorGames/Services/Logger.h"
 #include "src/MoriorGames/Utils/TextUtils.h"
 #include "src/MoriorGames/Definitions.h"
@@ -65,7 +65,7 @@ int main()
 {
     auto logger = new Logger;
     sf::Clock clock;
-    auto map = (new MapFactory)->createMap();
+    auto map = new Map;
     auto player = new Player;
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
