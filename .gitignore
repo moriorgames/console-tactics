@@ -22,6 +22,7 @@ ConsoleTactics.cbp
 src/libbfai_vendor.a
 main
 tests/testsuite
+logs/*.log
 
 # Libraries
 src/libconsole_tactics.a

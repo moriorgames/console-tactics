@@ -2,11 +2,16 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+#include <fstream>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include "src/MoriorGames/Entity/Player.h"
 #include "src/MoriorGames/Services/InputEvents.h"
 #include "src/MoriorGames/Services/MapFactory.h"
+#include "src/MoriorGames/Services/Logger.h"
+#include "src/MoriorGames/Utils/TextUtils.h"
 #include "src/MoriorGames/Definitions.h"
 
 using namespace std;
@@ -58,6 +63,7 @@ sf::Color sampleGlyph(sf::Image &image, float x, float y, int distanceDarken)
 
 int main()
 {
+    auto logger = new Logger;
     sf::Clock clock;
     auto map = (new MapFactory)->createMap();
     auto player = new Player;
@@ -217,6 +223,9 @@ int main()
         }
 
         window.display();
+        float fps = 1.0f / clock.getElapsedTime().asSeconds();
+        auto stringFps = "FPS: " + to_string(fps);
+        logger->log(stringFps);
     }
 
     return EXIT_SUCCESS;
