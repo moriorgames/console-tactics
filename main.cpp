@@ -11,8 +11,6 @@
 #include "src/MoriorGames/Entity/Map.h"
 #include "src/MoriorGames/Services/InputEvents.h"
 #include "src/MoriorGames/Services/Logger.h"
-#include "src/MoriorGames/Utils/TextUtils.h"
-#include "src/MoriorGames/Definitions.h"
 
 using namespace std;
 
@@ -69,8 +67,7 @@ int main()
     auto player = new Player;
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
-
-    auto inputEvents = new InputEvents(clock, map, player, window);
+    window.setFramerateLimit(60);
 
     // Setup Colors
     sf::Color wallClose(100, 100, 100);
@@ -83,10 +80,6 @@ int main()
     sf::Color lightFloor(100, 80, 50);
     sf::Color floor(90, 70, 40);
     sf::Color darkFloor(80, 60, 30);
-
-    sf::Color lightSky(60, 70, 100);
-    sf::Color sky(50, 60, 90);
-    sf::Color darkSky(40, 50, 80);
 
     sf::Texture texture;
     texture.loadFromFile("res/textures/wall-1.jpg");
@@ -104,10 +97,25 @@ int main()
         }
     }
 
+    auto skyTexture = new sf::Texture;
+    skyTexture->loadFromFile("res/textures/sky-texture.jpg");
+    skyTexture->setRepeated(true);
+    sf::RectangleShape skyRectangle(sf::Vector2f(1400, 200));
+    skyRectangle.setPosition(0, 0);
+    skyRectangle.setTexture(skyTexture);
+    skyRectangle.setTextureRect(sf::IntRect(0, 0, 1400, 200));
+    skyRectangle.setScale(sf::Vector2f(2.0f, 2.0f));
+
+    auto inputEvents = new InputEvents(clock, map, player, skyRectangle, window);
+
     while (window.isOpen()) {
 
         inputEvents->process();
         window.clear(sf::Color::Blue);
+
+        // Draw fixed background
+        window.draw(skyRectangle);
+
         index = 0;
 
         for (int x = 0; x < screenWidth; x++) {
@@ -188,16 +196,6 @@ int main()
 
             for (int y = 0; y < screenHeight; y++) {
 
-                sf::Color skyShade;
-                float skyFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
-                if (skyFloat < 1.15) {
-                    skyShade = darkSky;
-                } else if (skyFloat < 1.35) {
-                    skyShade = sky;
-                } else {
-                    skyShade = lightSky;
-                }
-
                 sf::Color floorShade;
                 float floorFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
                 if (floorFloat < 0.55) {
@@ -209,15 +207,16 @@ int main()
                 }
 
                 if (y <= nCeiling) {
-                    rectangles.at(index).setFillColor(skyShade);
+//                    rectangles.at(index).setFillColor(skyShade);
                 } else if (y > nCeiling && y <= nFloor) {
                     float fSampleY = ((float) y - (float) nCeiling) / ((float) nFloor - (float) nCeiling);
                     rectangles.at(index).setFillColor(sampleGlyph(image, fSampleX, fSampleY, distanceDarken));
+                    window.draw(rectangles.at(index));
                 } else {
                     rectangles.at(index).setFillColor(floorShade);
+                    window.draw(rectangles.at(index));
                 }
 
-                window.draw(rectangles.at(index));
                 index++;
             }
         }

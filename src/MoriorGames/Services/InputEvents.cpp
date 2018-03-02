@@ -1,8 +1,11 @@
 #include "InputEvents.h"
-#include "../Definitions.h"
 
-InputEvents::InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RenderWindow &window)
-    : clock{clock}, map{map}, player{player}, window{window}
+InputEvents::InputEvents(sf::Clock &clock,
+                         Map *map,
+                         Player *player,
+                         sf::RectangleShape &rectangle,
+                         sf::RenderWindow &window)
+    : clock{clock}, map{map}, player{player}, rectangle{rectangle}, window{window}
 {
 }
 
@@ -22,9 +25,15 @@ void InputEvents::process()
         // Player rotation
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             player->turnLeft();
+            auto rect = rectangle.getTextureRect();
+            rect.left -= 3;
+            rectangle.setTextureRect(rect);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             player->turnRight();
+            auto rect = rectangle.getTextureRect();
+            rect.left += 3;
+            rectangle.setTextureRect(rect);
         }
 
         // Player moves

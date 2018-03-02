@@ -8,13 +8,14 @@
 class InputEvents
 {
 public:
-    InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RenderWindow &window);
+    InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RectangleShape &rectangle, sf::RenderWindow &window);
     void process();
 
 private:
     sf::Clock &clock;
     Map *map;
     Player *player;
+    sf::RectangleShape &rectangle;
     sf::RenderWindow &window;
 };
 
