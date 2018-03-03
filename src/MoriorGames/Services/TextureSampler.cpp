@@ -1,9 +1,9 @@
 #include "TextureSampler.h"
 #include "../Definitions.h"
 
-TextureSampler::TextureSampler(sf::Image &image)
-    : image{image}
+TextureSampler::TextureSampler(const std::string &file)
 {
+    image = initImage(file);
 }
 
 sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
@@ -39,6 +39,14 @@ sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
 
         return color;
     }
+}
+
+sf::Image TextureSampler::initImage(const std::string &file)
+{
+    sf::Texture texture;
+    texture.loadFromFile(file);
+
+    return texture.copyToImage();
 }
 
 int TextureSampler::darkByDistance(float distance)

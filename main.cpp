@@ -39,12 +39,7 @@ int main()
 
     sf::Color floorColor(90, 70, 40);
 
-    sf::Texture texture;
-    texture.loadFromFile("res/textures/wall-1.jpg");
-    auto image = texture.copyToImage();
-    auto textureSampler = new TextureSampler(image);
-
-    int distanceDarken = 0;
+    auto wallSampler = new TextureSampler("res/textures/wall-1.jpg");
 
     unsigned int index = 0;
     std::vector<sf::RectangleShape> rectangles(screenWidth * screenHeight);
@@ -146,7 +141,7 @@ int main()
                 if (y > nCeiling && y <= nFloor) {
                     float fSampleY = ((float) y - (float) nCeiling) / ((float) nFloor - (float) nCeiling);
                     rectangles.at(index).setFillColor(
-                        textureSampler->getPixelColor(fSampleX, fSampleY, fDistanceToWall)
+                        wallSampler->getPixelColor(fSampleX, fSampleY, fDistanceToWall)
                     );
                     window.draw(rectangles.at(index));
                 }
