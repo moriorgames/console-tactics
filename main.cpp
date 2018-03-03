@@ -11,6 +11,7 @@
 #include "src/MoriorGames/Entity/Map.h"
 #include "src/MoriorGames/Services/InputEvents.h"
 #include "src/MoriorGames/Services/Logger.h"
+#include "src/MoriorGames/Services/TextureSampler.h"
 
 using namespace std;
 
@@ -26,39 +27,6 @@ float fFOV = 3.14159f / 3.5f;
 
 float fDepth = MAP_SIZE;
 
-sf::Color sampleGlyph(sf::Image &image, float x, float y, int distanceDarken)
-{
-    float width = image.getSize().x;
-    float height = image.getSize().y;
-    sf::Color color(0, 0, 0);
-
-    int sx = (int) (x * width);
-    int sy = (int) (y * height - 1.0f);
-    if (sx < 0 || sx >= width || sy < 0 || sy >= height) {
-        return color;
-    } else {
-
-        color = image.getPixel(sx, sy);
-        if (color.r > distanceDarken) {
-            color.r -= distanceDarken;
-        } else {
-            color.r = 0;
-        }
-        if (color.g > distanceDarken) {
-            color.g -= distanceDarken;
-        } else {
-            color.g = 0;
-        }
-        if (color.b > distanceDarken) {
-            color.b -= distanceDarken;
-        } else {
-            color.b = 0;
-        }
-
-        return color;
-    }
-}
-
 int main()
 {
     auto logger = new Logger;
@@ -69,21 +37,13 @@ int main()
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
     window.setFramerateLimit(60);
 
-    // Setup Colors
-    sf::Color wallClose(100, 100, 100);
-    sf::Color wallMedium(80, 80, 80);
-    sf::Color wallFar(65, 65, 65);
-    sf::Color wallFarFar(40, 40, 40);
-    sf::Color darkestGray(20, 20, 20);
-    sf::Color textureGray(40, 40, 40);
-
-    sf::Color lightFloor(100, 80, 50);
-    sf::Color floor(90, 70, 40);
-    sf::Color darkFloor(80, 60, 30);
+    sf::Color floorColor(90, 70, 40);
 
     sf::Texture texture;
     texture.loadFromFile("res/textures/wall-1.jpg");
     auto image = texture.copyToImage();
+    auto textureSampler = new TextureSampler(image);
+
     int distanceDarken = 0;
 
     unsigned int index = 0;
@@ -104,14 +64,14 @@ int main()
     skyRectangle.setPosition(0, 0);
     skyRectangle.setTexture(skyTexture);
     skyRectangle.setTextureRect(sf::IntRect(0, 0, 1400, 200));
-    skyRectangle.setScale(sf::Vector2f(2.0f, 2.0f));
+    skyRectangle.setScale(sf::Vector2f(2.1f, 2.1f));
 
     auto inputEvents = new InputEvents(clock, map, player, skyRectangle, window);
 
     while (window.isOpen()) {
 
         inputEvents->process();
-        window.clear(sf::Color::Blue);
+        window.clear(floorColor);
 
         // Draw fixed background
         window.draw(skyRectangle);
@@ -181,39 +141,13 @@ int main()
             int nCeiling = (float) (screenHeight / 2.0) - screenHeight / ((float) fDistanceToWall);
             int nFloor = screenHeight - nCeiling;
 
-            // Shader walls based on distance
-            if (fDistanceToWall <= fDepth / 6.0f) {
-                distanceDarken = 0;
-            } else if (fDistanceToWall < fDepth / 4.0f) {
-                distanceDarken = 25;
-            } else if (fDistanceToWall < fDepth / 3.0f) {
-                distanceDarken = 50;
-            } else if (fDistanceToWall < fDepth / 2.0f) {
-                distanceDarken = 75;
-            } else {
-                distanceDarken = 100;
-            }
-
             for (int y = 0; y < screenHeight; y++) {
 
-                sf::Color floorShade;
-                float floorFloat = 1.0f - (((float) y - screenHeight / 2.0f) / ((float) screenWidth / 2.0f));
-                if (floorFloat < 0.55) {
-                    floorShade = lightFloor;
-                } else if (floorFloat < 0.81) {
-                    floorShade = floor;
-                } else {
-                    floorShade = darkFloor;
-                }
-
-                if (y <= nCeiling) {
-//                    rectangles.at(index).setFillColor(skyShade);
-                } else if (y > nCeiling && y <= nFloor) {
+                if (y > nCeiling && y <= nFloor) {
                     float fSampleY = ((float) y - (float) nCeiling) / ((float) nFloor - (float) nCeiling);
-                    rectangles.at(index).setFillColor(sampleGlyph(image, fSampleX, fSampleY, distanceDarken));
-                    window.draw(rectangles.at(index));
-                } else {
-                    rectangles.at(index).setFillColor(floorShade);
+                    rectangles.at(index).setFillColor(
+                        textureSampler->getPixelColor(fSampleX, fSampleY, fDistanceToWall)
+                    );
                     window.draw(rectangles.at(index));
                 }
 

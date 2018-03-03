@@ -26,13 +26,13 @@ void InputEvents::process()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             player->turnLeft();
             auto rect = rectangle.getTextureRect();
-            rect.left -= 3;
+            rect.left -= SKY_MOVE;
             rectangle.setTextureRect(rect);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             player->turnRight();
             auto rect = rectangle.getTextureRect();
-            rect.left += 3;
+            rect.left += SKY_MOVE;
             rectangle.setTextureRect(rect);
         }
 

@@ -6,6 +6,7 @@ add_library(
         MoriorGames/Entity/Tile.cpp
         MoriorGames/Services/InputEvents.cpp
         MoriorGames/Services/Logger.cpp
+        MoriorGames/Services/TextureSampler.cpp
         MoriorGames/Utils/TextUtils.h
 )
 
