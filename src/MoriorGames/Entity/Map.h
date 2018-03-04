@@ -2,7 +2,6 @@
 #define MORIOR_GAMES_ENTITY_MAP_H
 
 #include <vector>
-#include "Tile.h"
 #include "../Definitions.h"
 
 class Map

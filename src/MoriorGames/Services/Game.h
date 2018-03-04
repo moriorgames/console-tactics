@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "../Definitions.h"
+#include "TextureSampler.h"
 
 class Game
 {
@@ -17,7 +18,15 @@ private:
     float fFOV = 3.14159f / 3.5f;
     float fDepth = MAP_SIZE;
 
-
+    void draw(sf::RenderWindow &window,
+              TextureSampler *wallSampler,
+              unsigned int index,
+              std::vector<sf::RectangleShape> &rectangles,
+              float fDistanceToWall,
+              float fSampleX,
+              int nCeiling,
+              int nFloor,
+              int y) const;
 };
 
 #endif

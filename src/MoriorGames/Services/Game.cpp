@@ -9,6 +9,7 @@
 
 #include "../Entity/Player.h"
 #include "../Entity/Map.h"
+#include "../Entity/Walls.h"
 #include "InputEvents.h"
 #include "Logger.h"
 #include "TextureSampler.h"
@@ -17,6 +18,7 @@ using namespace std;
 
 Game::Game()
 {
+    auto walls = new Walls(screenWidth, screenHeight, pixelRatio);
     auto logger = new Logger;
     sf::Clock clock;
     auto map = new Map;
@@ -28,17 +30,6 @@ Game::Game()
     sf::Color floorColor(90, 70, 40);
 
     auto wallSampler = new TextureSampler("res/textures/wall-1.jpg");
-
-    unsigned int index = 0;
-    std::vector<sf::RectangleShape> rectangles(screenWidth *screenHeight);
-    for (int x = 0; x < screenWidth; x++) {
-        for (int y = 0; y < screenHeight; y++) {
-            sf::RectangleShape rectangle(sf::Vector2f(pixelRatio, pixelRatio));
-            rectangle.setPosition(x * pixelRatio, y * pixelRatio);
-            rectangles.at(index) = rectangle;
-            index++;
-        }
-    }
 
     auto skyTexture = new sf::Texture;
     skyTexture->loadFromFile("res/textures/sky-texture.jpg");
@@ -59,7 +50,7 @@ Game::Game()
         // Draw fixed background
         window.draw(skyRectangle);
 
-        index = 0;
+        unsigned int index = 0;
 
         for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
@@ -127,11 +118,7 @@ Game::Game()
             for (int y = 0; y < screenHeight; y++) {
 
                 if (y > nCeiling && y <= nFloor) {
-                    float fSampleY = ((float) y - (float) nCeiling) / ((float) nFloor - (float) nCeiling);
-                    rectangles.at(index).setFillColor(
-                        wallSampler->getPixelColor(fSampleX, fSampleY, fDistanceToWall)
-                    );
-                    window.draw(rectangles.at(index));
+                    walls->draw(window, wallSampler, index, fDistanceToWall, fSampleX, nCeiling, nFloor, y);
                 }
 
                 index++;
