@@ -9,22 +9,17 @@ class Walls
 {
 public:
     Walls(short screenWidth, short screenHeight, short pixelRatio);
-    void draw(sf::RenderWindow &window,
-              TextureSampler *wallSampler,
-              unsigned int index,
-              float distance,
-              float sampleX,
-              int ceiling,
-              int floor,
-              int y);
+    int draw(sf::RenderWindow &window, int index, float distance, float sampleX);
 
 private:
     short screenWidth = 0;
     short screenHeight = 0;
     short pixelRatio = 0;
+    TextureSampler *wallSampler;
     std::vector<sf::RectangleShape> rectangles;
 
-    void initRectangles();
+    void init();
+    void drawRow(sf::RenderWindow &window, int index, float distance, float sampleX, int ceiling, int floor, int y);
 };
 
 #endif

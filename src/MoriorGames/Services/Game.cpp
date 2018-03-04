@@ -12,7 +12,6 @@
 #include "../Entity/Walls.h"
 #include "InputEvents.h"
 #include "Logger.h"
-#include "TextureSampler.h"
 
 using namespace std;
 
@@ -28,8 +27,6 @@ Game::Game()
     window.setFramerateLimit(60);
 
     sf::Color floorColor(90, 70, 40);
-
-    auto wallSampler = new TextureSampler("res/textures/wall-1.jpg");
 
     auto skyTexture = new sf::Texture;
     skyTexture->loadFromFile("res/textures/sky-texture.jpg");
@@ -50,7 +47,7 @@ Game::Game()
         // Draw fixed background
         window.draw(skyRectangle);
 
-        unsigned int index = 0;
+        int index = 0;
 
         for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
@@ -58,7 +55,7 @@ Game::Game()
 
             // Find distance to wall
             float fStepSize = 0.1f;          // Increment size for ray casting, decrease to increase
-            float fDistanceToWall = 0.0f; //                                      resolution
+            float distanceToWall = 0.0f; //                                      resolution
 
             bool bHitWall = false;        // Set when ray hits wall block
 
@@ -69,16 +66,16 @@ Game::Game()
 
             // Incrementally cast ray from player, along ray angle, testing for
             // intersection with a block
-            while (!bHitWall && fDistanceToWall < fDepth) {
+            while (!bHitWall && distanceToWall < fDepth) {
 
-                fDistanceToWall += fStepSize;
-                int nTestX = (int) (player->getX() + fEyeX * fDistanceToWall);
-                int nTestY = (int) (player->getY() + fEyeY * fDistanceToWall);
+                distanceToWall += fStepSize;
+                int nTestX = (int) (player->getX() + fEyeX * distanceToWall);
+                int nTestY = (int) (player->getY() + fEyeY * distanceToWall);
 
                 // Test if ray is out of bounds
                 if (nTestX < 0 || nTestX >= mapSize || nTestY < 0 || nTestY >= mapSize) {
                     bHitWall = true;            // Just set distance to maximum depth
-                    fDistanceToWall = fDepth;
+                    distanceToWall = fDepth;
                 } else {
                     // Ray is inbounds so test to see if the ray cell is a wall block
                     if (map->isWallCollision(nTestX, nTestY)) {
@@ -90,8 +87,8 @@ Game::Game()
                         float fBlockMidX = (float) nTestX + 0.5f;
                         float fBlockMidY = (float) nTestY + 0.5f;
 
-                        float fTestPointX = player->getX() + fEyeX * fDistanceToWall;
-                        float fTestPointY = player->getY() + fEyeY * fDistanceToWall;
+                        float fTestPointX = player->getX() + fEyeX * distanceToWall;
+                        float fTestPointY = player->getY() + fEyeY * distanceToWall;
 
                         float fTestAngle = atan2f((fTestPointY - fBlockMidY), (fTestPointX - fBlockMidX));
 
@@ -111,18 +108,7 @@ Game::Game()
                 }
             }
 
-            // Calculate distance to ceiling and floor
-            int nCeiling = (float) (screenHeight / 2.0) - screenHeight / ((float) fDistanceToWall);
-            int nFloor = screenHeight - nCeiling;
-
-            for (int y = 0; y < screenHeight; y++) {
-
-                if (y > nCeiling && y <= nFloor) {
-                    walls->draw(window, wallSampler, index, fDistanceToWall, fSampleX, nCeiling, nFloor, y);
-                }
-
-                index++;
-            }
+            index = walls->draw(window, index, distanceToWall, fSampleX);
         }
 
         window.display();
