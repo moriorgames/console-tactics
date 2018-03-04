@@ -4,6 +4,7 @@ add_library(
         MoriorGames/Entity/Map.cpp
         MoriorGames/Entity/Player.cpp
         MoriorGames/Entity/Tile.cpp
+        MoriorGames/Services/Game.cpp
         MoriorGames/Services/InputEvents.cpp
         MoriorGames/Services/Logger.cpp
         MoriorGames/Services/TextureSampler.cpp
