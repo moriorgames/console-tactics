@@ -51,3 +51,20 @@ void InputEvents::process()
         }
     }
 }
+
+void InputEvents::registerObserver(InputObserverInterface *observer)
+{
+    observers.push_back(observer);
+}
+
+void InputEvents::removeObserver(InputObserverInterface *observer)
+{
+    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+void InputEvents::notifyObservers()
+{
+    for (auto observer:observers) {
+        observer->update();
+    }
+}

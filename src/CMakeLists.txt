@@ -4,6 +4,8 @@ add_library(
         MoriorGames/Entity/Map.cpp
         MoriorGames/Entity/Player.cpp
         MoriorGames/Entity/Walls.cpp
+        MoriorGames/Observer/InputObserverInterface.h
+        MoriorGames/Observer/InputSubjectInterface.h
         MoriorGames/Services/Game.cpp
         MoriorGames/Services/InputEvents.cpp
         MoriorGames/Services/Logger.cpp

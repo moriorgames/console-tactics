@@ -1,12 +1,4 @@
 #include "Game.h"
-
-#include <cmath>
-
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-
 #include "../Entity/Player.h"
 #include "../Entity/Map.h"
 #include "../Entity/Walls.h"
