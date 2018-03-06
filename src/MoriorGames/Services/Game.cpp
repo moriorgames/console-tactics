@@ -1,9 +1,9 @@
 #include "Game.h"
 #include "../Entity/Player.h"
-#include "../Entity/Map.h"
 #include "../Entity/Walls.h"
 #include "EventPublisher.h"
 #include "Logger.h"
+#include "../View/CeilingView.h"
 
 using namespace std;
 
@@ -20,17 +20,11 @@ Game::Game()
 
     sf::Color floorColor(90, 70, 40);
 
-    auto skyTexture = new sf::Texture;
-    skyTexture->loadFromFile("res/textures/sky-texture.jpg");
-    skyTexture->setRepeated(true);
-    sf::RectangleShape skyRectangle(sf::Vector2f(1400, 200));
-    skyRectangle.setPosition(0, 0);
-    skyRectangle.setTexture(skyTexture);
-    skyRectangle.setTextureRect(sf::IntRect(0, 0, 1400, 200));
-    skyRectangle.setScale(sf::Vector2f(2.1f, 2.1f));
+    auto ceilingView = new CeilingView;
 
-    auto eventPublisher = new EventPublisher(skyRectangle, window);
+    auto eventPublisher = new EventPublisher(window);
     eventPublisher->registerObserver(player);
+    eventPublisher->registerObserver(ceilingView);
 
     while (window.isOpen()) {
 
@@ -41,7 +35,7 @@ Game::Game()
         window.clear(floorColor);
 
         // Draw fixed background
-        window.draw(skyRectangle);
+        window.draw(ceilingView->getRect());
 
         int index = 0;
 

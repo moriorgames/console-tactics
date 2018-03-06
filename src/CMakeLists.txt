@@ -12,6 +12,7 @@ add_library(
         MoriorGames/Services/Logger.cpp
         MoriorGames/Services/TextureSampler.cpp
         MoriorGames/Utils/TextUtils.h
+        MoriorGames/View/CeilingView.cpp
 )
 
 target_link_libraries(console_tactics)

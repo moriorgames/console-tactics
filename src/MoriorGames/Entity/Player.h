@@ -18,18 +18,12 @@ public:
 
     void update(EventState *) override;
 
-    void turnLeft();
-    void turnRight();
-    void moveForward();
-    void moveBack();
-
     float getX() const;
     void setX(float x);
     float getY() const;
     void setY(float y);
     float getAngle() const;
     void setAngle(float angle);
-
     void setElapsedTime(float elapsedTime);
 
 private:
@@ -37,6 +31,10 @@ private:
     float elapsedTime = .0f;
     float x = START_X, y = START_Y, angle = START_ANGLE;
 
+    void turnLeft();
+    void turnRight();
+    void moveForward();
+    void moveBack();
 };
 
 #endif

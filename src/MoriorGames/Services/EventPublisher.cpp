@@ -1,7 +1,7 @@
 #include "EventPublisher.h"
 
-EventPublisher::EventPublisher(sf::RectangleShape &rectangle, sf::RenderWindow &window)
-    : rectangle{rectangle}, window{window}
+EventPublisher::EventPublisher(sf::RenderWindow &window)
+    : window{window}
 {
     eventState = new EventState;
 }
@@ -17,15 +17,9 @@ void EventPublisher::process()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             eventState->setLeft(true);
-            auto rect = rectangle.getTextureRect();
-            rect.left -= SKY_MOVE;
-            rectangle.setTextureRect(rect);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             eventState->setRight(true);
-            auto rect = rectangle.getTextureRect();
-            rect.left += SKY_MOVE;
-            rectangle.setTextureRect(rect);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             eventState->setUp(true);

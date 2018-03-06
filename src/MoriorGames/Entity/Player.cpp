@@ -7,14 +7,12 @@ Player::Player(Map *map)
 
 void Player::update(EventState *eventState)
 {
-    // Player rotation
     if (eventState->isLeft()) {
         turnLeft();
     }
     if (eventState->isRight()) {
         turnRight();
     }
-
     if (eventState->isUp()) {
         moveForward();
         if (map->isWallCollision(x, y)) {
@@ -27,28 +25,6 @@ void Player::update(EventState *eventState)
             moveForward();
         }
     }
-}
-
-void Player::turnLeft()
-{
-    angle -= SPEED_ROTATE * elapsedTime;
-}
-
-void Player::turnRight()
-{
-    angle += SPEED_ROTATE * elapsedTime;
-}
-
-void Player::moveForward()
-{
-    x += sinf(angle) * SPEED_MOVE * elapsedTime;
-    y += cosf(angle) * SPEED_MOVE * elapsedTime;
-}
-
-void Player::moveBack()
-{
-    x -= sinf(angle) * SPEED_MOVE * elapsedTime;
-    y -= cosf(angle) * SPEED_MOVE * elapsedTime;
 }
 
 float Player::getX() const
@@ -84,4 +60,26 @@ void Player::setAngle(float angle)
 void Player::setElapsedTime(float elapsedTime)
 {
     this->elapsedTime = elapsedTime;
+}
+
+void Player::turnLeft()
+{
+    angle -= SPEED_ROTATE * elapsedTime;
+}
+
+void Player::turnRight()
+{
+    angle += SPEED_ROTATE * elapsedTime;
+}
+
+void Player::moveForward()
+{
+    x += sinf(angle) * SPEED_MOVE * elapsedTime;
+    y += cosf(angle) * SPEED_MOVE * elapsedTime;
+}
+
+void Player::moveBack()
+{
+    x -= sinf(angle) * SPEED_MOVE * elapsedTime;
+    y -= cosf(angle) * SPEED_MOVE * elapsedTime;
 }

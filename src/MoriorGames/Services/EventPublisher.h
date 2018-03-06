@@ -11,7 +11,7 @@ class EventPublisher: public EventPublishable
 public:
     const short SKY_MOVE = 4;
 
-    EventPublisher(sf::RectangleShape &rectangle, sf::RenderWindow &window);
+    EventPublisher(sf::RenderWindow &window);
     void registerObserver(EventObservable *) override;
     void removeObserver(EventObservable *) override;
     void notifyObservers() override;
@@ -20,7 +20,6 @@ public:
 private:
     EventState *eventState;
     std::vector<EventObservable *> observers;
-    sf::RectangleShape &rectangle;
     sf::RenderWindow &window;
 };
 
