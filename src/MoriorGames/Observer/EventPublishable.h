@@ -1,13 +1,13 @@
 #ifndef MORIOR_GAMES_OBSERVER_INPUT_PUBLISHER_INTERFACE_H
 #define MORIOR_GAMES_OBSERVER_INPUT_PUBLISHER_INTERFACE_H
 
-#include "Subscribable.h"
+#include "EventObservable.h"
 
-class Publishable
+class EventPublishable
 {
 public:
-    virtual void registerObserver(Subscribable *) = 0;
-    virtual void removeObserver(Subscribable *) = 0;
+    virtual void registerObserver(EventObservable *) = 0;
+    virtual void removeObserver(EventObservable *) = 0;
     virtual void notifyObservers() = 0;
 };
 

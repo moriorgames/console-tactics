@@ -1,5 +1,15 @@
 #include "EventState.h"
 
+EventState::EventState()
+{
+    clear();
+}
+
+void EventState::clear()
+{
+    up = false, down = false, left = false, right = false;
+}
+
 bool EventState::isUp() const
 {
     return up;

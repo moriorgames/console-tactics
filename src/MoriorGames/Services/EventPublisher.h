@@ -4,24 +4,22 @@
 #include <SFML/Graphics.hpp>
 #include "../Entity/Map.h"
 #include "../Entity/Player.h"
-#include "../Observer/Publishable.h"
+#include "../Observer/EventPublishable.h"
 
-class InputEvents: public Publishable
+class EventPublisher: public EventPublishable
 {
 public:
     const short SKY_MOVE = 4;
 
-    InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RectangleShape &rectangle, sf::RenderWindow &window);
-    void registerObserver(Subscribable *) override;
-    void removeObserver(Subscribable *) override;
+    EventPublisher(sf::RectangleShape &rectangle, sf::RenderWindow &window);
+    void registerObserver(EventObservable *) override;
+    void removeObserver(EventObservable *) override;
     void notifyObservers() override;
     void process();
 
 private:
-    std::vector<Subscribable *> observers;
-    sf::Clock &clock;
-    Map *map;
-    Player *player;
+    EventState *eventState;
+    std::vector<EventObservable *> observers;
     sf::RectangleShape &rectangle;
     sf::RenderWindow &window;
 };

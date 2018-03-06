@@ -13,7 +13,7 @@ Game::Game()
     auto logger = new Logger;
     sf::Clock clock;
     auto map = new Map;
-    auto player = new Player;
+    auto player = new Player(map);
     // Create main window
     sf::RenderWindow window(sf::VideoMode(screenWidth * pixelRatio, screenHeight * pixelRatio), "SFML Graphics");
     window.setFramerateLimit(60);
@@ -29,11 +29,15 @@ Game::Game()
     skyRectangle.setTextureRect(sf::IntRect(0, 0, 1400, 200));
     skyRectangle.setScale(sf::Vector2f(2.1f, 2.1f));
 
-    auto inputEvents = new InputEvents(clock, map, player, skyRectangle, window);
+    auto eventPublisher = new EventPublisher(skyRectangle, window);
+    eventPublisher->registerObserver(player);
 
     while (window.isOpen()) {
 
-        inputEvents->process();
+        auto elapsedTime = clock.getElapsedTime();
+        clock.restart();
+        player->setElapsedTime(elapsedTime.asSeconds());
+        eventPublisher->process();
         window.clear(floorColor);
 
         // Draw fixed background
@@ -104,7 +108,7 @@ Game::Game()
         }
 
         window.display();
-        float fps = 1.0f / clock.getElapsedTime().asSeconds();
+        float fps = 1.0f / elapsedTime.asSeconds();
         auto stringFps = "FPS: " + to_string(fps);
         logger->log(stringFps);
     }

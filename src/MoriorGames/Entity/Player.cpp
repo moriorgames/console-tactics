@@ -1,5 +1,34 @@
 #include "Player.h"
 
+Player::Player(Map *map)
+    : map{map}
+{
+}
+
+void Player::update(EventState *eventState)
+{
+    // Player rotation
+    if (eventState->isLeft()) {
+        turnLeft();
+    }
+    if (eventState->isRight()) {
+        turnRight();
+    }
+
+    if (eventState->isUp()) {
+        moveForward();
+        if (map->isWallCollision(x, y)) {
+            moveBack();
+        }
+    }
+    if (eventState->isDown()) {
+        moveBack();
+        if (map->isWallCollision(x, y)) {
+            moveForward();
+        }
+    }
+}
+
 void Player::turnLeft()
 {
     angle -= SPEED_ROTATE * elapsedTime;

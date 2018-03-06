@@ -4,6 +4,8 @@
 class EventState
 {
 public:
+    EventState();
+    void clear();
     bool isUp() const;
     void setUp(bool up);
     bool isDown() const;
@@ -14,7 +16,7 @@ public:
     void setRight(bool right);
 
 private:
-    bool up = false, down = false, left = false, right = false;
+    bool up, down, left, right;
 
 };
 
