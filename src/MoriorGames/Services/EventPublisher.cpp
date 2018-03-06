@@ -1,4 +1,4 @@
-#include "InputEvents.h"
+#include "EventPublisher.h"
 
 InputEvents::InputEvents(sf::Clock &clock,
                          Map *map,
@@ -52,12 +52,12 @@ void InputEvents::process()
     }
 }
 
-void InputEvents::registerObserver(InputObserverInterface *observer)
+void InputEvents::registerObserver(Subscribable *observer)
 {
     observers.push_back(observer);
 }
 
-void InputEvents::removeObserver(InputObserverInterface *observer)
+void InputEvents::removeObserver(Subscribable *observer)
 {
     observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
 }

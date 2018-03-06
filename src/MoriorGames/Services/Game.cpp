@@ -2,7 +2,7 @@
 #include "../Entity/Player.h"
 #include "../Entity/Map.h"
 #include "../Entity/Walls.h"
-#include "InputEvents.h"
+#include "EventPublisher.h"
 #include "Logger.h"
 
 using namespace std;

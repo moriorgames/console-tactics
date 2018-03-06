@@ -4,21 +4,21 @@
 #include <SFML/Graphics.hpp>
 #include "../Entity/Map.h"
 #include "../Entity/Player.h"
-#include "../Observer/InputSubjectInterface.h"
+#include "../Observer/Publishable.h"
 
-class InputEvents: public InputSubjectInterface
+class InputEvents: public Publishable
 {
 public:
     const short SKY_MOVE = 4;
 
     InputEvents(sf::Clock &clock, Map *map, Player *player, sf::RectangleShape &rectangle, sf::RenderWindow &window);
-    void registerObserver(InputObserverInterface *) override;
-    void removeObserver(InputObserverInterface *) override;
+    void registerObserver(Subscribable *) override;
+    void removeObserver(Subscribable *) override;
     void notifyObservers() override;
     void process();
 
 private:
-    std::vector<InputObserverInterface *> observers;
+    std::vector<Subscribable *> observers;
     sf::Clock &clock;
     Map *map;
     Player *player;
