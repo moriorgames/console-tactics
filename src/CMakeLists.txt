@@ -2,6 +2,7 @@
 add_library(
         console_tactics
         MoriorGames/Entity/EventState.cpp
+        MoriorGames/Entity/Lamps.cpp
         MoriorGames/Entity/Map.cpp
         MoriorGames/Entity/Player.cpp
         MoriorGames/Entity/Walls.cpp
@@ -13,6 +14,6 @@ add_library(
         MoriorGames/Services/TextureSampler.cpp
         MoriorGames/Utils/TextUtils.h
         MoriorGames/View/CeilingView.cpp
-)
+        MoriorGames/ValueObject/Coordinate.cpp MoriorGames/ValueObject/Coordinate.h)
 
 target_link_libraries(console_tactics)

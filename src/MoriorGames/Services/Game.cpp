@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "../Entity/Player.h"
+#include "../Entity/Lamps.h"
 #include "../Entity/Walls.h"
 #include "EventPublisher.h"
 #include "Logger.h"
@@ -10,6 +11,7 @@ using namespace std;
 Game::Game()
 {
     auto walls = new Walls(screenWidth, screenHeight, pixelRatio);
+    auto lamps = new Lamps(pixelRatio);
     auto logger = new Logger;
     sf::Clock clock;
     auto map = new Map;
