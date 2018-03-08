@@ -103,6 +103,62 @@ Game::Game()
             index = walls->draw(window, index, distanceToWall, fSampleX);
         }
 
+        for (auto &coordinate : lamps->getLamps()) {
+
+            // Can object be seen?
+            float fVecX = coordinate.x - player->getX();
+            float fVecY = coordinate.y - player->getY();
+            float fDistanceFromPlayer = sqrtf(fVecX * fVecX + fVecY * fVecY);
+
+            float fEyeX = sinf(player->getAngle());
+            float fEyeY = cosf(player->getAngle());
+
+            // Calculate angle between lamp and players feet, and players looking direction
+            // to determine if the lamp is in the players field of view
+            float fObjectAngle = atan2f(fEyeY, fEyeX) - atan2f(fVecY, fVecX);
+            if (fObjectAngle < -3.14159f) {
+                fObjectAngle += 2.0f * 3.14159f;
+            }
+            if (fObjectAngle > 3.14159f) {
+                fObjectAngle -= 2.0f * 3.14159f;
+            }
+
+            bool bInPlayerFOV = fabs(fObjectAngle) < fFOV / 2.0f;
+
+            if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f) {
+
+                float fObjectCeiling = (float) (screenHeight / 2.0) - screenHeight / ((float) fDistanceFromPlayer);
+                float fObjectFloor = screenHeight - fObjectCeiling;
+                float fObjectHeight = fObjectFloor - fObjectCeiling;
+                float fObjectAspectRatio = (float) 50 / (float) 16;
+                float fObjectWidth = fObjectHeight / fObjectAspectRatio;
+                float fMiddleOfObject = (0.5f * (fObjectAngle / (fFOV / 2.0f)) + 0.5f) * (float) screenHeight;
+
+                // Draw Lamp
+                for (float lx = 0; lx < fObjectWidth; lx++) {
+                    for (float ly = 0; ly < fObjectHeight; ly++) {
+
+//                        index = lamps->draw(window, index, fDistanceFromPlayer, fSampleX);
+//
+//                        float fSampleX = lx / fObjectWidth;
+//                        float fSampleY = ly / fObjectHeight;
+//                        wchar_t c = object.sprite->SampleGlyph(fSampleX, fSampleY);
+//                        int nObjectColumn = (int) (fMiddleOfObject + lx - (fObjectWidth / 2.0f));
+//                        if (nObjectColumn >= 0 && nObjectColumn < screenHeight) {
+//                            if (c != L' ' && fDepthBuffer[nObjectColumn] >= fDistanceFromPlayer) {
+//                                Draw(nObjectColumn,
+//                                     fObjectCeiling + ly,
+//                                     c,
+//                                     object.sprite->SampleColour(fSampleX, fSampleY));
+//                                fDepthBuffer[nObjectColumn] = fDistanceFromPlayer;
+//                            }
+//                        }
+                    }
+                }
+            }
+
+        }
+
         window.display();
         float fps = 1.0f / elapsedTime.asSeconds();
         auto stringFps = "FPS: " + to_string(fps);
