@@ -1,5 +1,5 @@
-#ifndef CONSOLETACTICS_BACKGROUNDVIEW_H
-#define CONSOLETACTICS_BACKGROUNDVIEW_H
+#ifndef MORIOR_GAMES_VIEW_CEILING_VIEW_H
+#define MORIOR_GAMES_VIEW_CEILING_VIEW_H
 
 #include <SFML/Graphics.hpp>
 #include "../Observer/EventObservable.h"

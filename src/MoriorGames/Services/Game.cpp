@@ -5,6 +5,7 @@
 #include "EventPublisher.h"
 #include "Logger.h"
 #include "../View/CeilingView.h"
+#include "../View/GameObjectsView.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ Game::Game()
     sf::Color floorColor(90, 70, 40);
 
     auto ceilingView = new CeilingView;
+    auto gameObjectsView = new GameObjectsView(window, screenWidth, screenHeight, pixelRatio);
 
     auto eventPublisher = new EventPublisher(window);
     eventPublisher->registerObserver(player);
