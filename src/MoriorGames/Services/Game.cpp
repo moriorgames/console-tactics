@@ -5,13 +5,12 @@
 #include "EventPublisher.h"
 #include "Logger.h"
 #include "../View/CeilingView.h"
-#include "../View/GameObjectsView.h"
+#include "../View/GameView.h"
 
 using namespace std;
 
 Game::Game()
 {
-    auto walls = new Walls(screenWidth, screenHeight, pixelRatio);
     auto lamps = new Lamps(pixelRatio);
     auto logger = new Logger;
     sf::Clock clock;
@@ -24,7 +23,8 @@ Game::Game()
     sf::Color floorColor(90, 70, 40);
 
     auto ceilingView = new CeilingView;
-    auto gameObjectsView = new GameObjectsView(window, screenWidth, screenHeight, pixelRatio);
+    auto gameView = new GameView(window, screenWidth, screenHeight, pixelRatio);
+    auto walls = new Walls(gameView);
 
     auto eventPublisher = new EventPublisher(window);
     eventPublisher->registerObserver(player);

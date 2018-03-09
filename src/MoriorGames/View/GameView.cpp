@@ -1,18 +1,23 @@
-#include "GameObjectsView.h"
+#include "GameView.h"
 
-GameObjectsView::GameObjectsView(sf::RenderWindow &window, short screenWidth, short screenHeight, short pixelRatio)
+GameView::GameView(sf::RenderWindow &window, short screenWidth, short screenHeight, short pixelRatio)
     : window{window}, screenWidth{screenWidth}, screenHeight{screenHeight}, pixelRatio{pixelRatio}
 {
     init();
 }
 
-void GameObjectsView::draw(int index, sf::Color color)
+void GameView::draw(int index, sf::Color color)
 {
     rectangles.at(index).setFillColor(color);
     window.draw(rectangles.at(index));
 }
 
-void GameObjectsView::init()
+short GameView::getScreenHeight() const
+{
+    return screenHeight;
+}
+
+void GameView::init()
 {
     for (int x = 0; x < screenWidth; x++) {
         for (int y = 0; y < screenHeight; y++) {

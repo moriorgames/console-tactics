@@ -15,7 +15,7 @@ add_library(
         MoriorGames/Utils/TextUtils.h
         MoriorGames/ValueObject/Coordinate.cpp
         MoriorGames/View/CeilingView.cpp
-        MoriorGames/View/GameObjectsView.cpp
+        MoriorGames/View/GameView.cpp
 )
 
 target_link_libraries(console_tactics)

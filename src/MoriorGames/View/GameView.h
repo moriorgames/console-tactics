@@ -4,11 +4,12 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class GameObjectsView
+class GameView
 {
 public:
-    GameObjectsView(sf::RenderWindow &window, short screenWidth, short screenHeight, short pixelRatio);
+    GameView(sf::RenderWindow &window, short screenWidth, short screenHeight, short pixelRatio);
     void draw(int index, sf::Color color);
+    short getScreenHeight() const;
 
 private:
     sf::RenderWindow &window;
