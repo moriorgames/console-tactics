@@ -5,24 +5,21 @@
 #include <vector>
 #include "../Services/TextureSampler.h"
 #include "../ValueObject/Coordinate.h"
+#include "../View/GameView.h"
 
 class Lamps
 {
 public:
-    Lamps(short pixelRatio);
+    Lamps(GameView *gameView);
     const std::vector<Coordinate> &getLamps() const;
-    int draw(sf::RenderWindow &window, int index, float distance, float sampleX);
-    float isLamp(short x, short y);
+    void draw(sf::RenderWindow &window, float fFOV, float fObjectAngle, float distance);
 
 private:
-    short pixelRatio = 0;
+    GameView *gameView;
     TextureSampler *lampSampler;
     std::vector<Coordinate> lamps{
-        {2, 3}, {5, 4}, {4, 6}, {9, 3}
+        {14, 7}, {4, 6}, {9, 9}
     };
-
-    void init();
-    void drawRow(sf::RenderWindow &window, int index, float distance, float sampleX, int ceiling, int floor, int y);
 };
 
 #endif

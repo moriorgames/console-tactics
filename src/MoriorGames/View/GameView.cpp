@@ -8,13 +8,20 @@ GameView::GameView(sf::RenderWindow &window, short screenWidth, short screenHeig
 
 void GameView::draw(int index, sf::Color color)
 {
-    rectangles.at(index).setFillColor(color);
-    window.draw(rectangles.at(index));
+    if (index < rectangles.size()) {
+        rectangles.at(index).setFillColor(color);
+        window.draw(rectangles.at(index));
+    }
 }
 
 short GameView::getScreenHeight() const
 {
     return screenHeight;
+}
+
+short GameView::getScreenWidth() const
+{
+    return screenWidth;
 }
 
 void GameView::init()

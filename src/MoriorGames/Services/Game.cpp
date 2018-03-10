@@ -11,7 +11,6 @@ using namespace std;
 
 Game::Game()
 {
-    auto lamps = new Lamps(pixelRatio);
     auto logger = new Logger;
     sf::Clock clock;
     auto map = new Map;
@@ -25,6 +24,7 @@ Game::Game()
     auto ceilingView = new CeilingView;
     auto gameView = new GameView(window, screenWidth, screenHeight, pixelRatio);
     auto walls = new Walls(gameView);
+    auto lamps = new Lamps(gameView);
 
     auto eventPublisher = new EventPublisher(window);
     eventPublisher->registerObserver(player);
@@ -129,36 +129,9 @@ Game::Game()
 
             if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f) {
 
-                float fObjectCeiling = (float) (screenHeight / 2.0) - screenHeight / ((float) fDistanceFromPlayer);
-                float fObjectFloor = screenHeight - fObjectCeiling;
-                float fObjectHeight = fObjectFloor - fObjectCeiling;
-                float fObjectAspectRatio = (float) 50 / (float) 16;
-                float fObjectWidth = fObjectHeight / fObjectAspectRatio;
-                float fMiddleOfObject = (0.5f * (fObjectAngle / (fFOV / 2.0f)) + 0.5f) * (float) screenHeight;
+                lamps->draw(window, fFOV, fObjectAngle, fDistanceFromPlayer);
 
-                // Draw Lamp
-                for (float lx = 0; lx < fObjectWidth; lx++) {
-                    for (float ly = 0; ly < fObjectHeight; ly++) {
-
-//                        index = lamps->draw(window, index, fDistanceFromPlayer, fSampleX);
-//
-//                        float fSampleX = lx / fObjectWidth;
-//                        float fSampleY = ly / fObjectHeight;
-//                        wchar_t c = object.sprite->SampleGlyph(fSampleX, fSampleY);
-//                        int nObjectColumn = (int) (fMiddleOfObject + lx - (fObjectWidth / 2.0f));
-//                        if (nObjectColumn >= 0 && nObjectColumn < screenHeight) {
-//                            if (c != L' ' && fDepthBuffer[nObjectColumn] >= fDistanceFromPlayer) {
-//                                Draw(nObjectColumn,
-//                                     fObjectCeiling + ly,
-//                                     c,
-//                                     object.sprite->SampleColour(fSampleX, fSampleY));
-//                                fDepthBuffer[nObjectColumn] = fDistanceFromPlayer;
-//                            }
-//                        }
-                    }
-                }
             }
-
         }
 
         window.display();

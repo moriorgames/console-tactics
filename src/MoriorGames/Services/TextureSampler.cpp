@@ -36,6 +36,9 @@ sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
         } else {
             color.b = 0;
         }
+        if (color.r < 20 && color.g > 230 && color.b < 20) {
+            color.a = 0;
+        }
 
         return color;
     }

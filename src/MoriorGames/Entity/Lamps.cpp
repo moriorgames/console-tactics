@@ -1,9 +1,9 @@
 #include "Lamps.h"
 
-Lamps::Lamps(short pixelRatio)
-    : pixelRatio{pixelRatio}
+Lamps::Lamps(GameView *gameView)
+    : gameView{gameView}
 {
-    init();
+    lampSampler = new TextureSampler("res/textures/lamp.jpg");
 }
 
 const std::vector<Coordinate> &Lamps::getLamps() const
@@ -11,46 +11,26 @@ const std::vector<Coordinate> &Lamps::getLamps() const
     return lamps;
 }
 
-int Lamps::draw(sf::RenderWindow &window, int index, float distance, float sampleX)
+void Lamps::draw(sf::RenderWindow &window, float fFOV, float fObjectAngle, float distance)
 {
-//    // Calculate distance to ceiling and floor
-//    int ceiling = (float) (screenHeight / 2.0) - screenHeight / ((float) distance);
-//    int floor = screenHeight - ceiling;
-//
-//    for (int y = 0; y < screenHeight; y++) {
-//        if (y > ceiling && y <= floor) {
-//            drawRow(window, index, distance, sampleX, ceiling, floor, y);
-//        }
-//        index++;
-//    }
+    float ceiling = (float) (gameView->getScreenHeight() / 2.0) - gameView->getScreenHeight() / distance;
+    float floor = gameView->getScreenHeight() - ceiling;
+    float height = floor - ceiling;
+    float aspectRatio = (float) 50 / (float) 16;
+    float width = height / aspectRatio;
+    float middleOfObject = (0.8f * (fObjectAngle / (fFOV / 2.0f)) + 0.8f) * (float) gameView->getScreenHeight();
 
-    return 0;
-}
+    for (float lx = 0; lx < width; lx++) {
+        for (float ly = 0; ly < height; ly++) {
+            float fSampleX = lx / width;
+            float fSampleY = ly / height;
+            int nObjectColumn = (int) (middleOfObject + lx - (width / 2.0f));
+            int index = nObjectColumn * gameView->getScreenHeight() + ly + ceiling;
+            auto color = lampSampler->getPixelColor(fSampleX, fSampleY, distance);
 
-void Lamps::init()
-{
-    lampSampler = new TextureSampler("res/textures/lamp.jpg");
-}
-
-float Lamps::isLamp(short x, short y)
-{
-    auto it = std::find_if(lamps.begin(), lamps.end(), [x, y](Coordinate coordinate)
-    {
-        return coordinate.x == x && coordinate.y == y;
-    });
-    if (it != lamps.end()) {
-
-        return 1;
+            if (index >= 0) {
+                gameView->draw(index, color);
+            }
+        }
     }
-
-    return 0;
-}
-
-void Lamps::drawRow(sf::RenderWindow &window, int index, float distance, float sampleX, int ceiling, int floor, int y)
-{
-//    float sampleY = ((float) y - (float) ceiling) / ((float) floor - (float) ceiling);
-//    rectangles.at(index).setFillColor(
-//        wallSampler->getPixelColor(sampleX, sampleY, distance)
-//    );
-//    window.draw(rectangles.at(index));
 }

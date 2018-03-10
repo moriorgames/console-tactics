@@ -10,6 +10,7 @@ public:
     GameView(sf::RenderWindow &window, short screenWidth, short screenHeight, short pixelRatio);
     void draw(int index, sf::Color color);
     short getScreenHeight() const;
+    short getScreenWidth() const;
 
 private:
     sf::RenderWindow &window;
