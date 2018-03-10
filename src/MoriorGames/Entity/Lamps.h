@@ -16,7 +16,7 @@ public:
 
 private:
     GameView *gameView;
-    TextureSampler *lampSampler;
+    TextureSampler *sampler;
     std::vector<Coordinate> lamps{
         {14, 7}, {4, 6}, {9, 9}
     };

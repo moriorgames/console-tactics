@@ -3,7 +3,17 @@
 
 TextureSampler::TextureSampler(const std::string &file)
 {
-    image = initImage(file);
+    init(file);
+}
+
+float TextureSampler::getHeight() const
+{
+    return height;
+}
+
+float TextureSampler::getWidth() const
+{
+    return width;
 }
 
 sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
@@ -21,6 +31,9 @@ sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
         auto darkness = darkByDistance(distance);
 
         color = image.getPixel(sx, sy);
+        if (color.r < 20 && color.g > 230 && color.b < 20) {
+            color.a = 0;
+        }
         if (color.r > darkness) {
             color.r -= darkness;
         } else {
@@ -35,9 +48,6 @@ sf::Color TextureSampler::getPixelColor(float x, float y, float distance)
             color.b -= darkness;
         } else {
             color.b = 0;
-        }
-        if (color.r < 20 && color.g > 230 && color.b < 20) {
-            color.a = 0;
         }
 
         return color;
@@ -69,4 +79,11 @@ int TextureSampler::darkByDistance(float distance)
     }
 
     return darkness;
+}
+
+void TextureSampler::init(const std::string &file)
+{
+    image = initImage(file);
+    height = image.getSize().y;
+    width = image.getSize().x;
 }
