@@ -10,13 +10,13 @@ class Walls
 {
 public:
     Walls(GameView *gameView);
-    int draw(sf::RenderWindow &window, int index, float distance, float sampleX);
+    void draw(sf::RenderWindow &window, int x, float distance, float sampleX);
 
 private:
     GameView *gameView;
     TextureSampler *wallSampler;
 
-    void drawRow(sf::RenderWindow &window, int index, float distance, float sampleX, int ceiling, int floor, int y);
+    void drawRow(sf::RenderWindow &window, int x, int y, float distance, float sampleX, int ceiling, int floor);
 };
 
 #endif

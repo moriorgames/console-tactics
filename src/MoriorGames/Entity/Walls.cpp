@@ -6,7 +6,7 @@ Walls::Walls(GameView *gameView)
     wallSampler = new TextureSampler("res/textures/wall-1.jpg");
 }
 
-int Walls::draw(sf::RenderWindow &window, int index, float distance, float sampleX)
+void Walls::draw(sf::RenderWindow &window, int x, float distance, float sampleX)
 {
     // Calculate distance to ceiling and floor
     auto height = gameView->getScreenHeight();
@@ -15,16 +15,13 @@ int Walls::draw(sf::RenderWindow &window, int index, float distance, float sampl
 
     for (int y = 0; y < height; y++) {
         if (y > ceiling && y <= floor) {
-            drawRow(window, index, distance, sampleX, ceiling, floor, y);
+            drawRow(window, x, y, distance, sampleX, ceiling, floor);
         }
-        index++;
     }
-
-    return index;
 }
 
-void Walls::drawRow(sf::RenderWindow &window, int index, float distance, float sampleX, int ceiling, int floor, int y)
+void Walls::drawRow(sf::RenderWindow &window, int x, int y, float distance, float sampleX, int ceiling, int floor)
 {
     float sampleY = ((float) y - (float) ceiling) / ((float) floor - (float) ceiling);
-    gameView->draw(index, wallSampler->getPixelColor(sampleX, sampleY, distance));
+    gameView->draw(x, y, wallSampler->getPixelColor(sampleX, sampleY, distance));
 }

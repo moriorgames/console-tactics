@@ -41,8 +41,6 @@ Game::Game()
         // Draw fixed background
         window.draw(ceilingView->getRect());
 
-        int index = 0;
-
         for (int x = 0; x < screenWidth; x++) {
             // For each column, calculate the projected ray angle into world space
             float fRayAngle = (player->getAngle() - fFOV / 2.0f) + ((float) x / (float) screenWidth) * fFOV;
@@ -102,7 +100,7 @@ Game::Game()
                 }
             }
 
-            index = walls->draw(window, index, distanceToWall, fSampleX);
+            walls->draw(window, x, distanceToWall, fSampleX);
         }
 
         for (auto &coordinate : lamps->getLamps()) {

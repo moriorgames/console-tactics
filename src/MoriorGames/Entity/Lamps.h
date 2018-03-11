@@ -12,7 +12,7 @@ class Lamps
 public:
     Lamps(GameView *gameView);
     const std::vector<Coordinate> &getLamps() const;
-    void draw(sf::RenderWindow &window, float fFOV, float fObjectAngle, float distance);
+    void draw(sf::RenderWindow &window, float fFOV, float angle, float distance);
 
 private:
     GameView *gameView;

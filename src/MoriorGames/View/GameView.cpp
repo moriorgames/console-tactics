@@ -6,11 +6,11 @@ GameView::GameView(sf::RenderWindow &window, short screenWidth, short screenHeig
     init();
 }
 
-void GameView::draw(int index, sf::Color color)
+void GameView::draw(short x, short y, sf::Color color)
 {
-    if (index < rectangles.size()) {
-        rectangles.at(index).setFillColor(color);
-        window.draw(rectangles.at(index));
+    if (x < rects.size() && y < rects.at(0).size()) {
+        rects.at(x).at(y).setFillColor(color);
+        window.draw(rects.at(x).at(y));
     }
 }
 
@@ -27,10 +27,12 @@ short GameView::getScreenWidth() const
 void GameView::init()
 {
     for (int x = 0; x < screenWidth; x++) {
+        std::vector<sf::RectangleShape> vector;
         for (int y = 0; y < screenHeight; y++) {
             sf::RectangleShape rectangle(sf::Vector2f(pixelRatio, pixelRatio));
             rectangle.setPosition(x * pixelRatio, y * pixelRatio);
-            rectangles.push_back(rectangle);
+            vector.push_back(rectangle);
         }
+        rects.push_back(vector);
     }
 }
