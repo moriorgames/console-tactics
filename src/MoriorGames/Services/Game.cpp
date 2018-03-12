@@ -84,16 +84,16 @@ Game::Game()
 
                         float fTestAngle = atan2f((fTestPointY - fBlockMidY), (fTestPointX - fBlockMidX));
 
-                        if (fTestAngle >= -3.14159f * 0.25f && fTestAngle < 3.14159f * 0.25f) {
+                        if (fTestAngle >= -PI * 0.25f && fTestAngle < PI * 0.25f) {
                             fSampleX = fTestPointY - (float) nTestY;
                         }
-                        if (fTestAngle >= 3.14159f * 0.25f && fTestAngle < 3.14159f * 0.75f) {
+                        if (fTestAngle >= PI * 0.25f && fTestAngle < PI * 0.75f) {
                             fSampleX = fTestPointX - (float) nTestX;
                         }
-                        if (fTestAngle < -3.14159f * 0.25f && fTestAngle >= -3.14159f * 0.75f) {
+                        if (fTestAngle < -PI * 0.25f && fTestAngle >= -PI * 0.75f) {
                             fSampleX = fTestPointX - (float) nTestX;
                         }
-                        if (fTestAngle >= 3.14159f * 0.75f || fTestAngle < -3.14159f * 0.75f) {
+                        if (fTestAngle >= PI * 0.75f || fTestAngle < -PI * 0.75f) {
                             fSampleX = fTestPointY - (float) nTestY;
                         }
                     }
@@ -116,18 +116,18 @@ Game::Game()
             // Calculate angle between lamp and players feet, and players looking direction
             // to determine if the lamp is in the players field of view
             float fObjectAngle = atan2f(fEyeY, fEyeX) - atan2f(fVecY, fVecX);
-            if (fObjectAngle < -3.14159f) {
-                fObjectAngle += 2.0f * 3.14159f;
+            if (fObjectAngle < -PI) {
+                fObjectAngle += 2.0f * PI;
             }
-            if (fObjectAngle > 3.14159f) {
-                fObjectAngle -= 2.0f * 3.14159f;
+            if (fObjectAngle > PI) {
+                fObjectAngle -= 2.0f * PI;
             }
 
             bool bInPlayerFOV = fabs(fObjectAngle) < fFOV / 2.0f;
 
             if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f) {
 
-                lamps->draw(window, fFOV, fObjectAngle, fDistanceFromPlayer);
+                lamps->draw(window, fObjectAngle, fDistanceFromPlayer);
 
             }
         }

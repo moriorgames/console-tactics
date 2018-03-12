@@ -15,7 +15,7 @@ private:
     unsigned int screenWidth = 200;
     unsigned int screenHeight = 120;
     int mapSize = MAP_SIZE;
-    float fFOV = 3.14159f / 3.5f;
+    float fFOV = PI / 3.5f;
     float fDepth = MAP_SIZE;
 
     void draw(sf::RenderWindow &window,

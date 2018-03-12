@@ -12,13 +12,13 @@ class Lamps
 public:
     Lamps(GameView *gameView);
     const std::vector<Coordinate> &getLamps() const;
-    void draw(sf::RenderWindow &window, float fFOV, float angle, float distance);
+    void draw(sf::RenderWindow &window, float angle, float distance);
 
 private:
     GameView *gameView;
     TextureSampler *sampler;
     std::vector<Coordinate> lamps{
-        {14, 7}, {4, 6}, {9, 9}
+        {4, 7}
     };
 };
 

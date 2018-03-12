@@ -10,8 +10,8 @@ class Player: public EventObservable
 {
 public:
     Player(Map *map);
-    const float START_X = 3.0f;
-    const float START_Y = 3.0f;
+    const float START_X = 4.0f;
+    const float START_Y = 1.0f;
     const float START_ANGLE = .0f;
     const float SPEED_MOVE = 8.9f;
     const float SPEED_ROTATE = 4.1f;
