@@ -25,11 +25,13 @@ public:
     float getAngle() const;
     void setAngle(float angle);
     void setElapsedTime(float elapsedTime);
+    float getFieldOfView() const;
 
 private:
     Map *map;
     float elapsedTime = .0f;
     float x = START_X, y = START_Y, angle = START_ANGLE;
+    float fieldOfView = 3.14159f / 3.5f;
 
     void turnLeft();
     void turnRight();

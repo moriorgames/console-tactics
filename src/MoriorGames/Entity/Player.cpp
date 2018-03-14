@@ -83,3 +83,8 @@ void Player::moveBack()
     x -= sinf(angle) * SPEED_MOVE * elapsedTime;
     y -= cosf(angle) * SPEED_MOVE * elapsedTime;
 }
+
+float Player::getFieldOfView() const
+{
+    return fieldOfView;
+}
